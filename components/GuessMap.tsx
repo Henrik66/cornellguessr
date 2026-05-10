@@ -31,6 +31,11 @@ export default function GuessMap({ onGuess, reveal, disabled }: Props) {
   const guessMarkerRef = useRef<import("leaflet").Marker | null>(null);
   const revealLayerRef = useRef<import("leaflet").LayerGroup | null>(null);
   const [pinPlaced, setPinPlaced] = useState(false);
+  const disabledRef = useRef(disabled);
+
+  useEffect(() => {
+    disabledRef.current = disabled;
+  }, [disabled]);
 
   useEffect(() => {
     let cancelled = false;
@@ -57,7 +62,7 @@ export default function GuessMap({ onGuess, reveal, disabled }: Props) {
       revealLayerRef.current = L.layerGroup().addTo(map);
 
       map.on("click", (e: import("leaflet").LeafletMouseEvent) => {
-        if (disabled) return;
+        if (disabledRef.current) return;
         const { lat, lng } = e.latlng;
 
         if (guessMarkerRef.current) {
@@ -80,15 +85,6 @@ export default function GuessMap({ onGuess, reveal, disabled }: Props) {
       cancelled = true;
     };
   }, []);
-
-  // Handle disabled state
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
-    if (disabled) {
-      map.off("click");
-    }
-  }, [disabled]);
 
   // Show reveal lines
   useEffect(() => {

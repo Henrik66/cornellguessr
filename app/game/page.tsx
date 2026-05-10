@@ -240,7 +240,7 @@ export default function GamePage() {
       )}
 
       {/* Bottom-right: minimap */}
-      <div className="absolute bottom-6 right-6 z-20 w-72 h-52 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 group">
+      <div className="absolute bottom-6 right-6 z-20 w-72 h-52 hover:w-96 hover:h-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 group transition-all duration-300 ease-in-out">
         <GuessMap
           onGuess={handleGuess}
           reveal={revealData}
