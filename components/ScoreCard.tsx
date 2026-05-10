@@ -9,8 +9,6 @@ interface Props {
   rounds: RoundResult[];
   locationNames: Record<string, string>;
   onPlayAgain: () => void;
-  onSaveScore?: () => void;
-  isSaved?: boolean;
 }
 
 function formatDistance(m: number): string {
@@ -24,8 +22,6 @@ export default function ScoreCard({
   rounds,
   locationNames,
   onPlayAgain,
-  onSaveScore,
-  isSaved,
 }: Props) {
   const [copied, setCopied] = useState(false);
   const shareUrl =
@@ -83,19 +79,6 @@ export default function ScoreCard({
           >
             {copied ? "Link copied!" : "Share result"}
           </button>
-          {onSaveScore && !isSaved && (
-            <button
-              onClick={onSaveScore}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-xl transition-colors"
-            >
-              Save to leaderboard
-            </button>
-          )}
-          {isSaved && (
-            <p className="text-center text-sm text-green-600 font-medium">
-              Score saved to leaderboard!
-            </p>
-          )}
           <button
             onClick={onPlayAgain}
             className="w-full border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition-colors"

@@ -43,7 +43,7 @@ function AuthForm() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
         <h1 className="text-2xl font-black text-gray-900 mb-1">Sign in</h1>
-        <p className="text-gray-500 text-sm mb-6">Save your score to the leaderboard</p>
+        <p className="text-gray-500 text-sm mb-6">Sign in to track your scores</p>
 
         {sent ? (
           <p className="text-green-600 font-medium text-sm">
