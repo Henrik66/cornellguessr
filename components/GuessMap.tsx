@@ -140,11 +140,6 @@ export default function GuessMap({ onGuess, reveal, disabled }: Props) {
   return (
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full" />
-      {!pinPlaced && !disabled && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/70 text-white text-xs px-3 py-1 rounded-full pointer-events-none z-[1000]">
-          Click to place your guess
-        </div>
-      )}
     </div>
   );
 }
