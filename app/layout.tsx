@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CornellGuessr",
   description: "GeoGuessr for Cornell University campus. How well do you know Cornell?",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
