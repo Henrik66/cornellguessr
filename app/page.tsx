@@ -29,7 +29,7 @@ export default async function Home() {
         <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-xl px-4 py-2 mb-8">
           <span className="text-red-300 font-bold text-sm tracking-wide">NMPZ</span>
           <span className="text-white/60 text-xs">·</span>
-          <span className="text-red-200 text-sm">No Move, Pan, or Zoom — more game modes coming soon</span>
+          <span className="text-red-200 text-sm">No Move — more game modes coming soon</span>
         </div>
 
         <Link
