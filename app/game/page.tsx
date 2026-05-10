@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useReducer, useCallback } from "react";
+import { useEffect, useReducer, useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import type { Location, RoundResult as RoundResultData } from "@/lib/database.types";
@@ -20,6 +20,7 @@ const GuessMap = dynamic(() => import("@/components/GuessMap"), {
 });
 
 const ROUNDS = 5;
+const ROUND_SECONDS = 60;
 
 interface Guess {
   lat: number;
@@ -53,14 +54,14 @@ function reducer(state: State, action: Action): State {
     case "SET_GUESS":
       return { ...state, currentGuess: action.guess };
     case "SUBMIT": {
-      if (!state.currentGuess) return state;
       const loc = state.locations[state.currentRound];
-      const dist = haversine(state.currentGuess, { lat: loc.lat, lng: loc.lng });
-      const score = computeScore(dist);
+      const guess = state.currentGuess ?? { lat: loc.lat, lng: loc.lng };
+      const dist = haversine(guess, { lat: loc.lat, lng: loc.lng });
+      const score = state.currentGuess ? computeScore(dist) : 0;
       const result: RoundResultData = {
         location_id: loc.id,
-        guess_lat: state.currentGuess.lat,
-        guess_lng: state.currentGuess.lng,
+        guess_lat: guess.lat,
+        guess_lng: guess.lng,
         score,
         distance_m: dist,
       };
@@ -95,9 +96,15 @@ const initial: State = {
   error: null,
 };
 
+function pad(n: number) {
+  return String(n).padStart(2, "0");
+}
+
 export default function GamePage() {
   const router = useRouter();
   const [state, dispatch] = useReducer(reducer, initial);
+  const [secondsLeft, setSecondsLeft] = useState(ROUND_SECONDS);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     getActiveLocations()
@@ -112,6 +119,27 @@ export default function GamePage() {
         dispatch({ type: "ERROR", message: "Failed to load locations." })
       );
   }, []);
+
+  // Timer — runs only during "playing"
+  useEffect(() => {
+    if (state.phase !== "playing") {
+      if (timerRef.current) clearInterval(timerRef.current);
+      return;
+    }
+    setSecondsLeft(ROUND_SECONDS);
+    timerRef.current = setInterval(() => {
+      setSecondsLeft((s) => {
+        if (s <= 1) {
+          dispatch({ type: "SUBMIT" });
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [state.phase, state.currentRound]);
 
   // Save game when done
   useEffect(() => {
@@ -156,60 +184,89 @@ export default function GamePage() {
     : null;
 
   const totalScore = state.results.reduce((s, r) => s + r.score, 0);
+  const timerPct = secondsLeft / ROUND_SECONDS;
+  const timerUrgent = secondsLeft <= 10;
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-gray-950">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-900 border-b border-gray-800 shrink-0">
-        <h1 className="text-white font-bold text-sm tracking-wide">CornellGuessr</h1>
-        <div className="flex items-center gap-3">
-          {/* Round dots */}
-          <div className="flex gap-1.5">
-            {Array.from({ length: ROUNDS }).map((_, i) => (
-              <div
-                key={i}
-                className={`w-2 h-2 rounded-full ${
-                  i < state.results.length
-                    ? "bg-red-500"
-                    : i === state.currentRound && state.phase !== "done"
-                    ? "bg-white"
-                    : "bg-gray-600"
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-white font-semibold text-sm">
-            {totalScore.toLocaleString()} pts
-          </span>
-        </div>
+    <div className="h-screen w-screen overflow-hidden relative bg-gray-950">
+      {/* Street View — full screen */}
+      <div className="absolute inset-0">
+        <StreetViewPane location={loc} />
       </div>
 
-      {/* Main content */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Street View — left 60% */}
-        <div className="flex-[6] relative">
-          <StreetViewPane location={loc} />
-        </div>
-
-        {/* Guess map — right 40% */}
-        <div className="flex-[4] relative border-l border-gray-800">
-          <GuessMap
-            onGuess={handleGuess}
-            reveal={revealData}
-            disabled={isRevealing}
+      {/* Top-left: round indicator */}
+      <div className="absolute top-4 left-4 z-20 flex gap-1.5 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-2">
+        {Array.from({ length: ROUNDS }).map((_, i) => (
+          <div
+            key={i}
+            className={`w-6 h-2 rounded-full transition-colors ${
+              i < state.results.length
+                ? "bg-red-500"
+                : i === state.currentRound && !isRevealing
+                ? "bg-white"
+                : "bg-white/25"
+            }`}
           />
-          {!isRevealing && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000]">
-              <button
-                onClick={() => dispatch({ type: "SUBMIT" })}
-                disabled={!state.currentGuess}
-                className="px-6 py-2.5 rounded-xl font-semibold text-sm bg-red-600 text-white shadow-lg disabled:opacity-40 disabled:cursor-not-allowed hover:bg-red-700 transition-colors"
-              >
-                Submit guess
-              </button>
-            </div>
-          )}
-          {isRevealing && lastResult && (
+        ))}
+      </div>
+
+      {/* Top-left below rounds: score */}
+      <div className="absolute top-14 left-4 z-20 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
+        <span className="text-white font-bold text-sm tabular-nums">
+          {totalScore.toLocaleString()} pts
+        </span>
+      </div>
+
+      {/* Top-center: timer */}
+      {!isRevealing && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1">
+          <div
+            className={`px-5 py-1.5 rounded-full font-mono font-bold text-lg tabular-nums transition-colors ${
+              timerUrgent
+                ? "bg-red-600 text-white animate-pulse"
+                : "bg-black/70 backdrop-blur-sm text-white"
+            }`}
+          >
+            {pad(Math.floor(secondsLeft / 60))}:{pad(secondsLeft % 60)}
+          </div>
+          {/* progress bar */}
+          <div className="w-24 h-1 rounded-full bg-white/20 overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all ${timerUrgent ? "bg-red-500" : "bg-white"}`}
+              style={{ width: `${timerPct * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Bottom-right: minimap */}
+      <div className="absolute bottom-6 right-6 z-20 w-72 h-52 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 group">
+        <GuessMap
+          onGuess={handleGuess}
+          reveal={revealData}
+          disabled={isRevealing}
+        />
+        {/* Submit button inside minimap */}
+        {!isRevealing && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-[1000]">
+            <button
+              onClick={() => dispatch({ type: "SUBMIT" })}
+              disabled={!state.currentGuess}
+              className="px-5 py-2 rounded-xl font-semibold text-sm bg-red-600 text-white shadow-lg disabled:opacity-40 disabled:cursor-not-allowed hover:bg-red-700 transition-colors whitespace-nowrap"
+            >
+              Submit guess
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Reveal overlay — full screen, centered */}
+      {isRevealing && lastResult && (
+        <div className="absolute inset-0 z-30 flex">
+          {/* dim the street view side */}
+          <div className="flex-1 bg-black/40" />
+          {/* Result panel */}
+          <div className="w-full max-w-sm flex items-center justify-center p-6">
             <RoundResultOverlay
               locationName={loc.name}
               distanceMeters={lastResult.distance_m}
@@ -219,9 +276,9 @@ export default function GamePage() {
               onNext={() => dispatch({ type: "NEXT_ROUND" })}
               isLast={state.currentRound + 1 === ROUNDS}
             />
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

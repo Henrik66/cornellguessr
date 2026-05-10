@@ -43,7 +43,6 @@ export default function StreetViewPane({ location }: Props) {
     loadGoogleMaps().then(() => {
       if (cancelled || !ref.current) return;
       const opts: google.maps.StreetViewPanoramaOptions = {
-        position: { lat: location.lat, lng: location.lng },
         pov: { heading: location.heading, pitch: location.pitch },
         zoom: 1,
         disableDefaultUI: true,
@@ -57,6 +56,8 @@ export default function StreetViewPane({ location }: Props) {
       };
       if (location.pano_id) {
         opts.pano = location.pano_id;
+      } else {
+        opts.position = { lat: location.lat, lng: location.lng };
       }
       panoRef.current = new google.maps.StreetViewPanorama(ref.current, opts);
     });

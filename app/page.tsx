@@ -23,9 +23,14 @@ export default async function Home() {
         <h1 className="text-6xl font-black text-white mb-4 leading-none">
           Cornell<span className="text-red-300">Guessr</span>
         </h1>
-        <p className="text-red-100 text-lg mb-10 leading-relaxed">
+        <p className="text-red-100 text-lg mb-4 leading-relaxed">
           How well do you know Cornell&apos;s campus? Guess locations from Street View panoramas and score points for precision.
         </p>
+        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-xl px-4 py-2 mb-8">
+          <span className="text-red-300 font-bold text-sm tracking-wide">NMPZ</span>
+          <span className="text-white/60 text-xs">·</span>
+          <span className="text-red-200 text-sm">No Move, Pan, or Zoom — more game modes coming soon</span>
+        </div>
 
         <Link
           href="/game"
