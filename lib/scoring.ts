@@ -17,5 +17,6 @@ export function haversine(
 }
 
 export function computeScore(distanceMeters: number): number {
-  return Math.round(5000 * Math.exp(-distanceMeters / SCORE_DECAY_METERS));
+  const d = distanceMeters < 1 ? 0 : distanceMeters;
+  return Math.round(5000 * Math.exp(-d / SCORE_DECAY_METERS));
 }
