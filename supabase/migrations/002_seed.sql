@@ -3,20 +3,20 @@
 insert into locations (name, category, difficulty, lat, lng, pano_id, heading, pitch) values
 
 -- Landmarks (6)
-('Sage Chapel', 'landmark', 1, 42.447512, -76.484524, 'Q7psJc10iIg4BTZ0e8abzQ', 180, 10),
-('Statue of Ezra Cornell', 'landmark', 2, 42.449101, -76.485144, 'gQmR6Y1av5J4mIowj7jzdw', 90, 5),
-('Uris Library Clock Tower', 'landmark', 1, 42.447867, -76.484894, 'gbKXBxU1LVIftNZIzE0JaA', 0, 15),
-('Willard Straight Hall Entrance', 'landmark', 1, 42.447025, -76.486544, 'dpjnjU6KtwVVDJOGRi9wtA', 270, 0),
+('McGraw Tower', 'landmark', 1, 42.4475, -76.4854, 'CIHM0ogKEICAgICaz5CKSg', 180, 10),
+('Sage Chapel', 'landmark', 2, 42.4484, -76.4841, '6XtgUP0_3rbV-T9x53x9Kg', 90, 5),
+('Uris Library Clock Tower', 'landmark', 1, 42.4479, -76.4843, 'gbKXBxU1LVIftNZIzE0JaA', 0, 15),
+('Willard Straight Hall Entrance', 'landmark', 1, 42.4470, -76.4872, 'CIHM0ogKEICAgIDO4vDD6AE', 270, 0),
 ('Lynah Rink', 'landmark', 2, 42.445259, -76.477569, 'CJe5zHChOd0TmEZeNWzJVg', 45, 0),
-('The Dairy Bar', 'landmark', 2, 42.447552, -76.471643, 'mMUTQKX43IM6NwpzqXOsZg', 135, 0),
+('Cocktail Lounge', 'landmark', 2, 42.4476, -76.4856, 'ZXgwxI5p-EVCxz7yzySgkg', 135, 0),
 
 -- Academic (6)
-('Duffield Hall Glass Facade', 'academic', 2, 42.444322, -76.483312, 'smpDfhMR8wUD6uPicZoz2A', 0, 5),
-('Arts Quad Center', 'academic', 1, 42.449056, -76.484167, 'V_7fi4JOkCdAEj58tySGBw', 180, 0),
-('Ag Quad', 'academic', 2, 42.448768, -76.477933, '8vGiePxK7ndL_WNrhIN35A', 90, 0),
-('Mann Library Steps', 'academic', 2, 42.448825, -76.476785, 'UgcQkEtshm14qNL4dE-sQA', 270, 5),
+('Duffield Hall Glass Facade', 'academic', 2, 42.4443, -76.4832, 'tzhlkt7lBqWLd4aA2tZWLA', 0, 5),
+('Arts Quad Center', 'academic', 1, 42.4485, -76.4847, 'Q6EnKykJpF8M4KFtoNNLlg', 180, 0),
+('Ag Quad', 'academic', 2, 42.4494, -76.4780, 'aW6wNNB3xIt1i7UCziLenQ', 90, 0),
+('Mann Library Steps', 'academic', 2, 42.4491, -76.4770, 'i_EJzAsIIToxdkePEZJSew', 270, 5),
 ('Kennedy Hall', 'academic', 3, 42.448134, -76.479735, '2xOUBvCd1Qw-I0rH9DmTXg', 0, 0),
-('Statler Hall', 'academic', 2, 42.445372, -76.481591, 'yqzQH4WOlncD4aBlvkqVfQ', 180, 0),
+('Statler Hall', 'academic', 2, 42.4463, -76.4826, 'e7mjQFkDj5aGqfCGmOoqiA', 180, 0),
 
 -- Residential (6)
 ('Balch Hall', 'residential', 2, 42.452965, -76.480152, 'yFWRZ7u__rJfKqtCk2FAbA', 270, 0),
@@ -28,8 +28,8 @@ insert into locations (name, category, difficulty, lat, lng, pano_id, heading, p
 
 -- Gorge / outdoor (6)
 ('Beebe Lake Dam', 'gorge', 2, 42.451733, -76.479932, 'kK1nX7g0vnLlf5FrEKbrwg', 90, -5),
-('The Fuertes Observatory', 'gorge', 2, 42.452674, -76.474425, 'zu1U5coZBtVMz3s_f_vWPg', 270, 10),
-('Sibley Hall', 'gorge', 1, 42.451280, -76.485006, 'BHwpjwuNe9ECwiMwj-t68A', 0, 0),
+('Triphammer Falls', 'gorge', 2, 42.451123, -76.480636, 'qkj4DRfIxuHRroAdc0ymuA', 270, 10),
+('Suspension Bridge over Fall Creek', 'gorge', 1, 42.451890, -76.486079, 'zF6aRZLPA3Jr0CKW_Zafag', 0, 0),
 ('Cascadilla Gorge Trail Entrance', 'gorge', 3, 42.443051, -76.485877, 'V3XnQ5dosnAYpGWGt05j-Q', 45, 0),
 ('Libe Slope Top', 'gorge', 1, 42.449722, -76.485873, 'YoJnitPvSjLCofPfM6L0nA', 180, 5),
 ('Libe Slope Bottom', 'gorge', 2, 42.448162, -76.487613, 'IYNToylMNh8J-WuJoBINZA', 0, -5),
